@@ -209,7 +209,12 @@ function find_definition (target_graphite, options) {
         var add_targets = function(response_data) {
             for (var res_i = 0; res_i < response_data.length; res_i++) {
                 var target = find_definition(response_data[res_i], options);
-                target.label = target.name // flot wants 'label'
+                if ( target.name == undefined ) {
+                   // If the user didn't define name, then she knows what she is doing
+                   // this lets you set  target: 'aliasByNode(sumSeriesWithWildcards(group.*.*.*.metric,3),1)'
+                   target.name = response_data[res_i].target 
+                }
+
                 target.data = [];
                 if('drawNullAsZero' in options && options['drawNullAsZero']) {
                     for (var i in response_data[res_i].datapoints) {
